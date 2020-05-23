@@ -1,0 +1,10 @@
+language: c
+compiler: cc
+dist: bionic
+sudo: required
+
+before_install:
+  - sudo apt-get -q update
+  - sudo apt-get -y install libc6 libfontconfig1 libxft2 libx11-dev libxinerama-dev
+
+script: sudo make install
