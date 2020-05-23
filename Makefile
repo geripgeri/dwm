@@ -31,7 +31,7 @@ revert_changes:
 
 apply_patches: revert_changes
 	@echo "Applying patches"
-	for i in patches/*.diff; do echo "-> $${i}" && patch -s < $$i; done
+	for i in patches/*.diff; do echo "-> $${i}" && patch -l -s < $$i; done
 
 clean: 
 	rm -f dwm ${OBJ} dwm-${VERSION}.tar.gz
