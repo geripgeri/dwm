@@ -14,8 +14,8 @@ index 1c0b587..1e62218 100644
 +++ b/config.def.h
 @@ -16,6 +16,7 @@ static const char *colors[][3]      = {
  	/*               fg         bg         border   */
- 	[SchemeNorm] = { col_gray3, col_gray1, col_gray2 },
- 	[SchemeSel]  = { col_gray4, col_cyan,  col_cyan  },
+        [SchemeNorm] = { normfgcolor, normbgcolor, normbordercolor },
+        [SchemeSel]  = { selfgcolor,  selbgcolor,  selbordercolor  },
 +	[SchemeHid]  = { col_cyan,  col_gray1, col_cyan  },
  };
  
@@ -86,9 +86,9 @@ index 4465af1..151d50e 100644
  			arg.ui = 1 << i;
  		} else if (ev->x < x + blw)
  			click = ClkLtSymbol;
--		else if (ev->x > selmon->ww - TEXTW(stext))
+-		else if (ev->x > selmon->ww - TEXTW(stext) - getsystraywidth())
 +		/* 2px right padding */
-+		else if (ev->x > selmon->ww - TEXTW(stext) + lrpad - 2)
++		else if (ev->x > selmon->ww - TEXTW(stext) - getsystraywidth() + lrpad - 2)
  			click = ClkStatusText;
 -		else
 -			click = ClkWinTitle;
@@ -124,11 +124,11 @@ index 4465af1..151d50e 100644
  void
  drawbar(Monitor *m)
  {
--	int x, w, sw = 0;
-+	int x, w, sw = 0, n = 0, scm;
- 	int boxs = drw->fonts->h / 9;
- 	int boxw = drw->fonts->h / 6 + 2;
- 	unsigned int i, occ = 0, urg = 0;
+-	int x, w, tw = 0, stw = 0;
++	int x, w, tw = 0, stw = 0, n = 0, scm;
+        int boxs = drw->fonts->h / 9;
+        int boxw = drw->fonts->h / 6 + 2;
+        unsigned int i, occ = 0, urg = 0;
 @@ -709,6 +730,8 @@ drawbar(Monitor *m)
  	}
  
@@ -141,7 +141,7 @@ index 4465af1..151d50e 100644
 @@ -729,16 +752,37 @@ drawbar(Monitor *m)
  	x = drw_text(drw, x, 0, w, bh, lrpad / 2, m->ltsymbol, 0);
  
- 	if ((w = m->ww - sw - x) > bh) {
+ 	if ((w = m->ww - tw - stw - x) > bh) {
 -		if (m->sel) {
 -			drw_setscheme(drw, scheme[m == selmon ? SchemeSel : SchemeNorm]);
 -			drw_text(drw, x, 0, w, bh, lrpad / 2, m->sel->name, 0);
@@ -178,7 +178,7 @@ index 4465af1..151d50e 100644
 +
 +	m->bt = n;
 +	m->btw = w;
- 	drw_map(drw, m->barwin, 0, 0, m->ww, bh);
+ 	drw_map(drw, m->barwin, 0, 0, m->ww - stw, bh);
  }
  
 @@ -783,8 +827,8 @@ expose(XEvent *e)
