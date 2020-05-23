@@ -27,7 +27,7 @@ dwm: ${OBJ}
 
 revert_changes:
 	@echo "Reverting dwm.c, config.def.h"
-	git checkout HEAD -- dwm.c config.def.h
+	git checkout HEAD -- dwm.c config.def.h drw.c drw.h
 
 apply_patches: revert_changes
 	@echo "Applying patches"
@@ -52,7 +52,7 @@ install: apply_patches all
 	sed "s/VERSION/${VERSION}/g" < dwm.1 > ${DESTDIR}${MANPREFIX}/man1/dwm.1
 	chmod 644 ${DESTDIR}${MANPREFIX}/man1/dwm.1
 	@echo "Reverting dwm.c, config.def.h"
-	git checkout HEAD -- dwm.c config.def.h
+	git checkout HEAD -- dwm.c config.def.h drw.c drw.h
 
 uninstall:
 	rm -f ${DESTDIR}${PREFIX}/bin/dwm\
