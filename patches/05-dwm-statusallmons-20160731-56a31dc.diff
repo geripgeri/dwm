@@ -24,6 +24,6 @@ Index: dwm/dwm.c
 -	drawbar(selmon);
 +	for(m = mons; m; m = m->next)
 +		drawbar(m);
+     updatesystray();
  }
  
- void
